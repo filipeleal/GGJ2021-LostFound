@@ -6,7 +6,7 @@ public class SheepBehaviour : MonoBehaviour
 {
     public float WaitTime = 5;
     public float Speed = 0.2f;
-
+    public float Radius = 0.5f;
     Vector3 pos;
     bool isMoving = false;
 
@@ -23,7 +23,7 @@ public class SheepBehaviour : MonoBehaviour
 
         if (timeToMove < 0 && !isMoving)
         {
-            pos = (Random.insideUnitCircle * 0.2f);
+            pos = (Random.insideUnitCircle * Radius);
             pos += transform.position;
             Move();
             //timeToMove = WaitTime;
