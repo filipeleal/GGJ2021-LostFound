@@ -10,6 +10,8 @@ public class SheepBehaviour : MonoBehaviour
     Vector3 pos;
     bool isMoving = false;
 
+    public bool IsHidding = false;
+
     float timeToMove;
     // Start is called before the first frame update
     void Start()
@@ -20,6 +22,8 @@ public class SheepBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (IsHidding)
+            return;
 
         if (timeToMove < 0 && !isMoving)
         {
