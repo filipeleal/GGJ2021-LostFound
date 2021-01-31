@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
+using UnityEngine.SceneManagement;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
@@ -160,10 +161,12 @@ public class GameManager : MonoBehaviour
     void GameOver()
     {
         isGameOver = true;
+        SceneManager.LoadScene(1);
         Debug.Log("Game OVER");
     }
     void YouWon()
     {
+        SceneManager.LoadScene(2);
         Debug.Log("You WON!");
 
     }
@@ -171,6 +174,7 @@ public class GameManager : MonoBehaviour
     private void OnDrawGizmos()
     {
         //Gizmos.color.a = 0.3f;
+
         Gizmos.DrawSphere(SpawnCenter.transform.position, Radius);
     }
 }
