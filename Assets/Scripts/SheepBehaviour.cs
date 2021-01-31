@@ -13,9 +13,12 @@ public class SheepBehaviour : MonoBehaviour
     public bool IsHidding = false;
 
     float timeToMove;
+    private bool isSafe;
+
     // Start is called before the first frame update
     void Start()
     {
+        isSafe = false;
         timeToMove = Random.Range(1f, 5f);
     }
 
@@ -56,5 +59,29 @@ public class SheepBehaviour : MonoBehaviour
         //Debug.Log(transform.parent);
         float step = Speed * Time.deltaTime;
         transform.position = Vector3.MoveTowards(transform.position, pos, step);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.tag == "SafeArea")
+        {
+            isSafe = true;
+            IsHidding = false;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.tag == "SafeArea")
+        {
+            isSafe = false;
+            IsHidding = false;
+        }
+    }
+
+
+    public bool IsSafe()
+    {
+        return isSafe;
     }
 }

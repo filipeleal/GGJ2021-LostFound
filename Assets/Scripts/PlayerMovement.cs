@@ -18,6 +18,7 @@ public class PlayerMovement : MonoBehaviour
 
     private SheepBehaviour sheep;
 
+
     public SpriteRenderer renderer;
     private void Awake()
     {
@@ -77,29 +78,41 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (sheep != null)
+            return;
+        
+        SheepBehaviour sheepCollision;
+        if (collision.gameObject.TryGetComponent(out sheepCollision))
+        {
+            if (!sheepCollision.IsSafe())
+            {
+                sheep = sheepCollision;
+                animator.SetBool("IsCarryingSheep", true);
+                collision.gameObject.SetActive(false);
+                speed /= 2;
+            }
+            else
+            {
+                sheep = null;
+            }
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log(collision.tag);
         if (sheep != null)
         {
             if (collision.tag == "SafeArea")
             {
+                Vector3 pos = Random.insideUnitCircle * GameManager.Instance.Radius;
                 animator.SetBool("IsCarryingSheep", false);
-                sheep.transform.position = transform.position;
+                sheep.transform.position = GameManager.Instance.SpawnCenter.transform.position + pos;
                 sheep.gameObject.SetActive(true);
+                sheep = null;
                 speed *= 2;
             }
         }
-
-
-        else if (collision.gameObject.TryGetComponent(out sheep))
-        {
-            animator.SetBool("IsCarryingSheep", true);
-            collision.gameObject.SetActive(false);
-            speed /= 2;
-        }
-
-
-
     }
 }

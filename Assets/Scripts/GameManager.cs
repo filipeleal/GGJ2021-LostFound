@@ -1,9 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Experimental.Rendering.Universal;
 using UnityEngine.Tilemaps;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -33,7 +34,30 @@ public class GameManager : MonoBehaviour
     private float changeColorEvery;
     private int currentColor = 0;
 
+    private bool isGameOver= false;
+
+    [SerializeField]
+    public Image ClockPointer;
+
     private List<SheepBehaviour> Sheeps;
+
+
+    private static GameManager _instance;
+
+    public static GameManager Instance { get { return _instance; } }
+
+
+    private void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            _instance = this;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -52,6 +76,9 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isGameOver)
+            return;
+
         daytime += Time.deltaTime;
         if (daytime > DayDuration)
         {
@@ -60,7 +87,7 @@ public class GameManager : MonoBehaviour
         else
         {
             UpdateSky();
-
+            UpdateClock();
         }
     }
 
@@ -91,6 +118,11 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    void UpdateClock()
+    {
+        ClockPointer.transform.rotation = Quaternion.Euler(0,0, -(daytime / DayDuration) * 360f);
+    }
+
     void UpdateSky()
     {
 
@@ -114,5 +146,31 @@ public class GameManager : MonoBehaviour
     {
         //daytime = 0f;
         currentColor = 0;
+
+        if (Sheeps.Any(x => !x.IsSafe()))
+        {
+            GameOver();
+        }
+        else
+        {
+            YouWon();
+        }
+    }
+
+    void GameOver()
+    {
+        isGameOver = true;
+        Debug.Log("Game OVER");
+    }
+    void YouWon()
+    {
+        Debug.Log("You WON!");
+
+    }
+
+    private void OnDrawGizmos()
+    {
+        //Gizmos.color.a = 0.3f;
+        Gizmos.DrawSphere(SpawnCenter.transform.position, Radius);
     }
 }
